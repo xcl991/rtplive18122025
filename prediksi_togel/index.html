@@ -56,6 +56,127 @@
             root.style.setProperty('--marquee-bg', theme.marqueeBg || 'rgba(26, 23, 23, 0.9)');
             root.style.setProperty('--marquee-text', theme.marqueeText || '#ffffff');
         })();
+
+        // APPLY BACKGROUND EFFECT - Initialize effect from config
+        (function() {
+            const effect = ASSETS.backgroundEffect || 'orbs';
+            const container = document.getElementById('bg-effect-container');
+
+            // Add effect class to body
+            document.body.classList.add('effect-' + effect);
+
+            // Generate effect elements based on type
+            const generateEffects = {
+                particles: () => {
+                    for (let i = 0; i < 50; i++) {
+                        const p = document.createElement('div');
+                        p.className = 'particle';
+                        p.style.left = Math.random() * 100 + '%';
+                        p.style.top = Math.random() * 100 + '%';
+                        p.style.animationDelay = Math.random() * 15 + 's';
+                        p.style.animationDuration = (10 + Math.random() * 10) + 's';
+                        container.appendChild(p);
+                    }
+                },
+                starfield: () => {
+                    for (let i = 0; i < 100; i++) {
+                        const s = document.createElement('div');
+                        s.className = 'star';
+                        s.style.left = Math.random() * 100 + '%';
+                        s.style.top = Math.random() * 100 + '%';
+                        s.style.animationDelay = Math.random() * 3 + 's';
+                        container.appendChild(s);
+                    }
+                },
+                matrix: () => {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+                    for (let i = 0; i < 30; i++) {
+                        const m = document.createElement('div');
+                        m.className = 'matrix-char';
+                        m.textContent = chars[Math.floor(Math.random() * chars.length)];
+                        m.style.left = Math.random() * 100 + '%';
+                        m.style.animationDuration = (3 + Math.random() * 5) + 's';
+                        m.style.animationDelay = Math.random() * 5 + 's';
+                        container.appendChild(m);
+                    }
+                },
+                geometric: () => {
+                    for (let i = 0; i < 15; i++) {
+                        const g = document.createElement('div');
+                        g.className = 'geo-shape';
+                        const size = 30 + Math.random() * 100;
+                        g.style.width = size + 'px';
+                        g.style.height = size + 'px';
+                        g.style.left = Math.random() * 100 + '%';
+                        g.style.top = Math.random() * 100 + '%';
+                        g.style.animationDelay = Math.random() * 20 + 's';
+                        if (Math.random() > 0.5) g.style.borderRadius = '50%';
+                        container.appendChild(g);
+                    }
+                },
+                bubbles: () => {
+                    for (let i = 0; i < 20; i++) {
+                        const b = document.createElement('div');
+                        b.className = 'bubble';
+                        const size = 20 + Math.random() * 60;
+                        b.style.width = size + 'px';
+                        b.style.height = size + 'px';
+                        b.style.left = Math.random() * 100 + '%';
+                        b.style.animationDelay = Math.random() * 10 + 's';
+                        b.style.animationDuration = (8 + Math.random() * 10) + 's';
+                        container.appendChild(b);
+                    }
+                },
+                lightning: () => {
+                    for (let i = 0; i < 5; i++) {
+                        const l = document.createElement('div');
+                        l.className = 'lightning';
+                        l.style.left = (10 + Math.random() * 80) + '%';
+                        l.style.animationDelay = Math.random() * 5 + 's';
+                        container.appendChild(l);
+                    }
+                },
+                smoke: () => {
+                    for (let i = 0; i < 8; i++) {
+                        const s = document.createElement('div');
+                        s.className = 'smoke';
+                        s.style.left = Math.random() * 100 + '%';
+                        s.style.animationDelay = Math.random() * 20 + 's';
+                        container.appendChild(s);
+                    }
+                },
+                spotlight: () => {
+                    for (let i = 0; i < 3; i++) {
+                        const sp = document.createElement('div');
+                        sp.className = 'spotlight';
+                        sp.style.left = Math.random() * 100 + '%';
+                        sp.style.top = Math.random() * 100 + '%';
+                        sp.style.animationDelay = i * 3 + 's';
+                        container.appendChild(sp);
+                    }
+                },
+                confetti: () => {
+                    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe'];
+                    for (let i = 0; i < 30; i++) {
+                        const c = document.createElement('div');
+                        c.className = 'confetti';
+                        c.style.left = Math.random() * 100 + '%';
+                        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        c.style.animationDelay = Math.random() * 5 + 's';
+                        c.style.animationDuration = (3 + Math.random() * 4) + 's';
+                        if (Math.random() > 0.5) c.style.borderRadius = '50%';
+                        container.appendChild(c);
+                    }
+                }
+            };
+
+            // Initialize effect (orbs use CSS pseudo-elements, others need JS)
+            if (effect !== 'orbs' && effect !== 'none' && generateEffects[effect]) {
+                generateEffects[effect]();
+            }
+
+            console.log(`✨ Background effect applied: ${effect}`);
+        })();
     </script>
     <!-- Firebase Push Notifications -->
     <!-- ONLY load App SDK in HTML - Messaging SDK loaded dynamically AFTER SW ready -->
@@ -254,9 +375,251 @@
         .angka-jitu {
             text-shadow: 0 0 15px color-mix(in srgb, var(--cta-primary) 80%, transparent);
         }
+
+        /* ========== BACKGROUND EFFECTS SYSTEM ========== */
+        /* Container for dynamic effects */
+        #bg-effect-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Hide default orbs when using other effects */
+        body:not(.effect-orbs) #app::before,
+        body:not(.effect-orbs)::before,
+        body:not(.effect-orbs)::after {
+            display: none !important;
+        }
+
+        /* Effect: Particles */
+        .effect-particles #bg-effect-container .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatParticle 15s infinite ease-in-out;
+        }
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+            25% { transform: translateY(-100px) translateX(50px); opacity: 0.8; }
+            50% { transform: translateY(-200px) translateX(-30px); opacity: 0.4; }
+            75% { transform: translateY(-150px) translateX(40px); opacity: 0.7; }
+        }
+
+        /* Effect: Matrix */
+        .effect-matrix #bg-effect-container .matrix-char {
+            position: absolute;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--accent-primary);
+            opacity: 0.8;
+            animation: matrixFall linear infinite;
+            text-shadow: 0 0 10px var(--accent-primary);
+        }
+        @keyframes matrixFall {
+            0% { transform: translateY(-100%); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0.3; }
+        }
+
+        /* Effect: Starfield */
+        .effect-starfield #bg-effect-container .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Effect: Gradient Wave */
+        .effect-gradientWave #bg-effect-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+            animation: gradientWave 8s linear infinite;
+        }
+        @keyframes gradientWave {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* Effect: Noise/Grain */
+        .effect-noise #bg-effect-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            animation: noiseMove 0.5s steps(10) infinite;
+        }
+        @keyframes noiseMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-10%, -10%); }
+        }
+
+        /* Effect: Geometric */
+        .effect-geometric #bg-effect-container .geo-shape {
+            position: absolute;
+            border: 1px solid var(--accent-primary);
+            opacity: 0.3;
+            animation: geoFloat 20s infinite ease-in-out;
+        }
+        @keyframes geoFloat {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            50% { transform: rotate(180deg) translateY(-50px); }
+        }
+
+        /* Effect: Aurora */
+        .effect-aurora #bg-effect-container::before,
+        .effect-aurora #bg-effect-container::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 50%;
+            opacity: 0.3;
+            filter: blur(60px);
+            animation: auroraMove 15s ease-in-out infinite;
+        }
+        .effect-aurora #bg-effect-container::before {
+            top: 0;
+            left: -25%;
+            background: linear-gradient(180deg, var(--accent-primary), transparent);
+        }
+        .effect-aurora #bg-effect-container::after {
+            top: 30%;
+            left: -10%;
+            background: linear-gradient(180deg, var(--accent-secondary), transparent);
+            animation-delay: -5s;
+        }
+        @keyframes auroraMove {
+            0%, 100% { transform: translateX(0) skewX(-5deg); }
+            50% { transform: translateX(10%) skewX(5deg); }
+        }
+
+        /* Effect: Bubbles */
+        .effect-bubbles #bg-effect-container .bubble {
+            position: absolute;
+            border: 1px solid var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: bubbleRise 10s infinite ease-in;
+        }
+        @keyframes bubbleRise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.4; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+
+        /* Effect: Lightning */
+        .effect-lightning #bg-effect-container .lightning {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, var(--accent-primary), var(--cta-primary), transparent);
+            opacity: 0;
+            animation: lightningStrike 5s infinite;
+        }
+        @keyframes lightningStrike {
+            0%, 90%, 100% { height: 0; opacity: 0; }
+            92%, 94% { height: 100vh; opacity: 1; }
+            93%, 95% { opacity: 0; }
+        }
+
+        /* Effect: Smoke */
+        .effect-smoke #bg-effect-container .smoke {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent-glow), transparent);
+            border-radius: 50%;
+            opacity: 0.2;
+            filter: blur(40px);
+            animation: smokeRise 20s infinite ease-out;
+        }
+        @keyframes smokeRise {
+            0% { transform: translateY(100%) scale(0.5); opacity: 0; }
+            50% { opacity: 0.2; }
+            100% { transform: translateY(-100%) scale(2); opacity: 0; }
+        }
+
+        /* Effect: Grid Pulse */
+        .effect-gridPulse #bg-effect-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--accent-primary) 1px, transparent 1px),
+                linear-gradient(90deg, var(--accent-primary) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.15; }
+        }
+
+        /* Effect: Spotlight */
+        .effect-spotlight #bg-effect-container .spotlight {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            border-radius: 50%;
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: spotlightMove 10s infinite ease-in-out;
+        }
+        @keyframes spotlightMove {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(100px, 50px); }
+            50% { transform: translate(50px, 100px); }
+            75% { transform: translate(-50px, 50px); }
+        }
+
+        /* Effect: Confetti */
+        .effect-confetti #bg-effect-container .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.8;
+            animation: confettiFall 5s infinite linear;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Effect: None - just solid background */
+        .effect-none #bg-effect-container {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Background Effect Container -->
+    <div id="bg-effect-container"></div>
 
     <div id="app" class="min-h-screen pb-24">
         

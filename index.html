@@ -261,54 +261,43 @@
             animation: gradientShift 15s ease infinite;
         }
 
-        /* Animated Pulse Glow Effect */
+        /* ========== BACKGROUND EFFECTS SYSTEM ========== */
+        /* Effect container */
+        #bg-effect-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Effect: None - no pseudo elements */
+        body.effect-none::before,
+        body.effect-none::after,
+        body.effect-none #app::before { display: none !important; }
+
+        /* Effect: Orbs (original bloom effect) */
         @keyframes pulseGlow {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.6;
-                transform: scale(1.2);
-            }
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
         }
-
         @keyframes moveOrb1 {
-            0%, 100% {
-                top: 20%;
-                left: 10%;
-            }
-            50% {
-                top: 40%;
-                left: 30%;
-            }
+            0%, 100% { top: 20%; left: 10%; }
+            50% { top: 40%; left: 30%; }
         }
-
         @keyframes moveOrb2 {
-            0%, 100% {
-                top: 60%;
-                right: 15%;
-            }
-            50% {
-                top: 30%;
-                right: 35%;
-            }
+            0%, 100% { top: 60%; right: 15%; }
+            50% { top: 30%; right: 35%; }
         }
-
         @keyframes moveOrb3 {
-            0%, 100% {
-                bottom: 20%;
-                left: 50%;
-            }
-            50% {
-                bottom: 40%;
-                left: 30%;
-            }
+            0%, 100% { bottom: 20%; left: 50%; }
+            50% { bottom: 40%; left: 30%; }
         }
-
-        /* Background animated orbs */
-        body::before,
-        body::after {
+        body.effect-orbs::before,
+        body.effect-orbs::after {
             content: '';
             position: fixed;
             border-radius: 50%;
@@ -316,23 +305,230 @@
             pointer-events: none;
             z-index: 0;
         }
-
-        body::before {
-            width: 400px;
-            height: 400px;
+        body.effect-orbs::before {
+            width: 400px; height: 400px;
             background: radial-gradient(circle, var(--accent-primary), transparent);
-            top: 20%;
-            left: 10%;
+            top: 20%; left: 10%;
             animation: pulseGlow 8s ease-in-out infinite, moveOrb1 20s ease-in-out infinite;
         }
+        body.effect-orbs::after {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--accent-secondary), transparent);
+            top: 60%; right: 15%;
+            animation: pulseGlow 6s ease-in-out infinite, moveOrb2 15s ease-in-out infinite;
+        }
+        body.effect-orbs #app::before {
+            content: '';
+            position: fixed;
+            width: 250px; height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow), transparent);
+            bottom: 20%; left: 50%;
+            filter: blur(60px);
+            animation: pulseGlow 7s ease-in-out infinite, moveOrb3 18s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        body::after {
+        /* Effect: Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatParticle 8s ease-in-out infinite;
+        }
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+            25% { transform: translateY(-30px) translateX(10px); opacity: 0.8; }
+            50% { transform: translateY(-60px) translateX(-10px); opacity: 0.4; }
+            75% { transform: translateY(-30px) translateX(15px); opacity: 0.7; }
+        }
+
+        /* Effect: Starfield */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Effect: Matrix */
+        .matrix-char {
+            position: absolute;
+            color: var(--accent-primary);
+            font-family: monospace;
+            font-size: 14px;
+            opacity: 0.8;
+            animation: matrixFall linear infinite;
+            text-shadow: 0 0 5px var(--accent-primary);
+        }
+        @keyframes matrixFall {
+            0% { transform: translateY(-100%); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0.3; }
+        }
+
+        /* Effect: Gradient Wave */
+        .gradient-wave {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--accent-glow), transparent, var(--accent-glow), transparent);
+            background-size: 400% 400%;
+            animation: waveMove 15s ease infinite;
+            opacity: 0.3;
+        }
+        @keyframes waveMove {
+            0% { transform: translate(-25%, -25%) rotate(0deg); }
+            50% { transform: translate(-25%, -25%) rotate(180deg); }
+            100% { transform: translate(-25%, -25%) rotate(360deg); }
+        }
+
+        /* Effect: Noise/Grain */
+        .noise-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            animation: noiseShift 0.5s steps(5) infinite;
+        }
+        @keyframes noiseShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(5%, 5%); }
+        }
+
+        /* Effect: Geometric */
+        .geo-shape {
+            position: absolute;
+            border: 1px solid var(--accent-primary);
+            opacity: 0.2;
+            animation: geoFloat 20s ease-in-out infinite;
+        }
+        @keyframes geoFloat {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            25% { transform: rotate(90deg) translateY(-20px); }
+            50% { transform: rotate(180deg) translateY(0); }
+            75% { transform: rotate(270deg) translateY(20px); }
+        }
+
+        /* Effect: Aurora */
+        .aurora {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, var(--accent-glow) 50%, transparent 100%);
+            opacity: 0.3;
+            animation: auroraWave 10s ease-in-out infinite;
+            filter: blur(50px);
+        }
+        @keyframes auroraWave {
+            0%, 100% { transform: translateX(-50%) skewX(-15deg); }
+            50% { transform: translateX(50%) skewX(15deg); }
+        }
+
+        /* Effect: Bubbles */
+        .bubble {
+            position: absolute;
+            border: 1px solid var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: bubbleRise 10s ease-in-out infinite;
+        }
+        @keyframes bubbleRise {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+
+        /* Effect: Lightning */
+        .lightning {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, var(--accent-primary), var(--cta-primary), transparent);
+            opacity: 0;
+            animation: lightningStrike 5s ease-in-out infinite;
+        }
+        @keyframes lightningStrike {
+            0%, 90%, 100% { opacity: 0; height: 0; }
+            92%, 94% { opacity: 1; height: 200px; }
+            93% { opacity: 0; }
+        }
+
+        /* Effect: Smoke */
+        .smoke {
+            position: absolute;
             width: 300px;
             height: 300px;
-            background: radial-gradient(circle, var(--accent-secondary), transparent);
-            top: 60%;
-            right: 15%;
-            animation: pulseGlow 6s ease-in-out infinite, moveOrb2 15s ease-in-out infinite;
+            background: radial-gradient(circle, var(--accent-glow), transparent);
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.2;
+            animation: smokeDrift 20s ease-in-out infinite;
+        }
+        @keyframes smokeDrift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.2); }
+            50% { transform: translate(100px, 0) scale(0.8); }
+            75% { transform: translate(50px, 30px) scale(1.1); }
+        }
+
+        /* Effect: Grid Pulse */
+        .grid-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--accent-primary) 1px, transparent 1px),
+                linear-gradient(90deg, var(--accent-primary) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.05;
+            animation: gridPulseAnim 3s ease-in-out infinite;
+        }
+        @keyframes gridPulseAnim {
+            0%, 100% { opacity: 0.03; }
+            50% { opacity: 0.08; }
+        }
+
+        /* Effect: Spotlight */
+        .spotlight {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: spotlightSweep 15s ease-in-out infinite;
+        }
+        @keyframes spotlightSweep {
+            0% { top: -20%; left: -20%; }
+            25% { top: -20%; left: 100%; }
+            50% { top: 100%; left: 100%; }
+            75% { top: 100%; left: -20%; }
+            100% { top: -20%; left: -20%; }
+        }
+
+        /* Effect: Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.8;
+            animation: confettiFall 5s linear infinite;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -345,22 +541,6 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
-        }
-
-        /* Additional floating orb */
-        #app::before {
-            content: '';
-            position: fixed;
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--accent-glow), transparent);
-            bottom: 20%;
-            left: 50%;
-            filter: blur(60px);
-            animation: pulseGlow 7s ease-in-out infinite, moveOrb3 18s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
         }
 
         .red-glow {
@@ -497,6 +677,162 @@
     </style>
 </head>
 <body>
+    <!-- Background Effect Container -->
+    <div id="bg-effect-container"></div>
+
+    <script>
+        // ========== BACKGROUND EFFECT INITIALIZATION ==========
+        (function() {
+            const effect = ASSETS.backgroundEffect || 'orbs';
+            const container = document.getElementById('bg-effect-container');
+
+            // Add effect class to body
+            document.body.classList.add('effect-' + effect);
+
+            // Generate effect elements based on type
+            const generateEffects = {
+                particles: () => {
+                    for (let i = 0; i < 50; i++) {
+                        const p = document.createElement('div');
+                        p.className = 'particle';
+                        p.style.left = Math.random() * 100 + '%';
+                        p.style.top = Math.random() * 100 + '%';
+                        p.style.animationDelay = Math.random() * 8 + 's';
+                        p.style.animationDuration = (5 + Math.random() * 5) + 's';
+                        container.appendChild(p);
+                    }
+                },
+                starfield: () => {
+                    for (let i = 0; i < 100; i++) {
+                        const s = document.createElement('div');
+                        s.className = 'star';
+                        s.style.left = Math.random() * 100 + '%';
+                        s.style.top = Math.random() * 100 + '%';
+                        s.style.animationDelay = Math.random() * 2 + 's';
+                        s.style.width = (1 + Math.random() * 2) + 'px';
+                        s.style.height = s.style.width;
+                        container.appendChild(s);
+                    }
+                },
+                matrix: () => {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+                    for (let i = 0; i < 30; i++) {
+                        const m = document.createElement('div');
+                        m.className = 'matrix-char';
+                        m.textContent = chars[Math.floor(Math.random() * chars.length)];
+                        m.style.left = Math.random() * 100 + '%';
+                        m.style.animationDuration = (3 + Math.random() * 5) + 's';
+                        m.style.animationDelay = Math.random() * 5 + 's';
+                        container.appendChild(m);
+                    }
+                },
+                gradientWave: () => {
+                    const wave = document.createElement('div');
+                    wave.className = 'gradient-wave';
+                    container.appendChild(wave);
+                },
+                noise: () => {
+                    const noise = document.createElement('div');
+                    noise.className = 'noise-overlay';
+                    container.appendChild(noise);
+                },
+                geometric: () => {
+                    const shapes = ['50px', '80px', '60px', '100px'];
+                    for (let i = 0; i < 8; i++) {
+                        const g = document.createElement('div');
+                        g.className = 'geo-shape';
+                        const size = shapes[Math.floor(Math.random() * shapes.length)];
+                        g.style.width = size;
+                        g.style.height = size;
+                        g.style.left = Math.random() * 100 + '%';
+                        g.style.top = Math.random() * 100 + '%';
+                        g.style.animationDelay = Math.random() * 10 + 's';
+                        if (Math.random() > 0.5) {
+                            g.style.borderRadius = '50%';
+                        }
+                        container.appendChild(g);
+                    }
+                },
+                aurora: () => {
+                    for (let i = 0; i < 3; i++) {
+                        const a = document.createElement('div');
+                        a.className = 'aurora';
+                        a.style.top = (i * 30) + '%';
+                        a.style.animationDelay = i * 2 + 's';
+                        container.appendChild(a);
+                    }
+                },
+                bubbles: () => {
+                    for (let i = 0; i < 20; i++) {
+                        const b = document.createElement('div');
+                        b.className = 'bubble';
+                        const size = 20 + Math.random() * 60;
+                        b.style.width = size + 'px';
+                        b.style.height = size + 'px';
+                        b.style.left = Math.random() * 100 + '%';
+                        b.style.animationDelay = Math.random() * 10 + 's';
+                        b.style.animationDuration = (8 + Math.random() * 10) + 's';
+                        container.appendChild(b);
+                    }
+                },
+                lightning: () => {
+                    for (let i = 0; i < 5; i++) {
+                        const l = document.createElement('div');
+                        l.className = 'lightning';
+                        l.style.left = Math.random() * 100 + '%';
+                        l.style.top = '0';
+                        l.style.animationDelay = Math.random() * 10 + 's';
+                        container.appendChild(l);
+                    }
+                },
+                smoke: () => {
+                    for (let i = 0; i < 5; i++) {
+                        const s = document.createElement('div');
+                        s.className = 'smoke';
+                        s.style.left = (i * 25) + '%';
+                        s.style.top = Math.random() * 100 + '%';
+                        s.style.animationDelay = i * 3 + 's';
+                        container.appendChild(s);
+                    }
+                },
+                gridPulse: () => {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-pulse';
+                    container.appendChild(grid);
+                },
+                spotlight: () => {
+                    for (let i = 0; i < 2; i++) {
+                        const spot = document.createElement('div');
+                        spot.className = 'spotlight';
+                        spot.style.animationDelay = i * 7 + 's';
+                        container.appendChild(spot);
+                    }
+                },
+                confetti: () => {
+                    const colors = ['var(--accent-primary)', 'var(--accent-secondary)', 'var(--cta-primary)', 'var(--cta-secondary)'];
+                    for (let i = 0; i < 30; i++) {
+                        const c = document.createElement('div');
+                        c.className = 'confetti';
+                        c.style.left = Math.random() * 100 + '%';
+                        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        c.style.animationDelay = Math.random() * 5 + 's';
+                        c.style.animationDuration = (3 + Math.random() * 3) + 's';
+                        if (Math.random() > 0.5) {
+                            c.style.borderRadius = '50%';
+                        }
+                        container.appendChild(c);
+                    }
+                }
+            };
+
+            // Initialize effect if not 'orbs' or 'none' (orbs use CSS pseudo-elements)
+            if (effect !== 'orbs' && effect !== 'none' && generateEffects[effect]) {
+                generateEffects[effect]();
+            }
+
+            console.log(`✨ Background effect: ${effect.toUpperCase()}`);
+        })();
+    </script>
 
     <div id="app" class="min-h-screen pb-24 overflow-x-hidden">
         

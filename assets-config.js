@@ -112,6 +112,27 @@ const ASSETS = {
     enablePopup: true,             // Popup event
 
     // ============================================
+    // ✨ BACKGROUND EFFECT - Efek Background Animasi
+    // ============================================
+    // Pilihan effect:
+    // "orbs"          - Floating glowing orbs (default, efek sebelumnya)
+    // "particles"     - Partikel kecil mengambang
+    // "matrix"        - Matrix rain effect
+    // "starfield"     - Bintang berkelip
+    // "gradientWave"  - Gelombang gradient bergerak
+    // "noise"         - Efek noise/grain halus
+    // "geometric"     - Bentuk geometris melayang
+    // "aurora"        - Efek cahaya aurora
+    // "bubbles"       - Gelembung transparan mengambang
+    // "lightning"     - Efek petir sesekali
+    // "smoke"         - Efek kabut/asap
+    // "gridPulse"     - Grid lines berdenyut
+    // "spotlight"     - Cahaya spotlight bergerak
+    // "confetti"      - Confetti jatuh
+    // "none"          - Tanpa efek (background solid)
+    backgroundEffect: "particles",
+
+    // ============================================
     // 🎨 THEME COLORS - Warna Website
     // ============================================
     // PRESET: "red", "blue", "green", "purple", "gold", "custom"
