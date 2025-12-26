@@ -1,0 +1,100 @@
+{
+  "total_providers": 19,
+  "providers": [
+    {
+      "key": "advant",
+      "name": "advant",
+      "total_games": "54"
+    },
+    {
+      "key": "pragmaticslots",
+      "name": "pragmatic-slots",
+      "total_games": "595"
+    },
+    {
+      "key": "habaneroslot",
+      "name": "habanero-slot",
+      "total_games": "186"
+    },
+    {
+      "key": "redtiger2slot",
+      "name": "redtiger2-slot",
+      "total_games": "371"
+    },
+    {
+      "key": "microgamingslot",
+      "name": "microgaming-slot",
+      "total_games": "325"
+    },
+    {
+      "key": "netent2slot",
+      "name": "netent2-slot",
+      "total_games": "222"
+    },
+    {
+      "key": "pg",
+      "name": "pg",
+      "total_games": "146"
+    },
+    {
+      "key": "xinnew",
+      "name": "xin-new",
+      "total_games": "119"
+    },
+    {
+      "key": "spadeslot",
+      "name": "spade-slot",
+      "total_games": "122"
+    },
+    {
+      "key": "cq9slot",
+      "name": "cq9-slot",
+      "total_games": "195"
+    },
+    {
+      "key": "ygg",
+      "name": "ygg",
+      "total_games": "288"
+    },
+    {
+      "key": "nolimitcity2slot",
+      "name": "nolimitcity2-slot",
+      "total_games": "114"
+    },
+    {
+      "key": "jilislot",
+      "name": "jili-slot",
+      "total_games": "113"
+    },
+    {
+      "key": "megawinslot",
+      "name": "megawin-slot",
+      "total_games": "53"
+    },
+    {
+      "key": "ssgslot",
+      "name": "ssg-slot",
+      "total_games": "18"
+    },
+    {
+      "key": "pegasusxslot",
+      "name": "pegasusx-slot",
+      "total_games": "122"
+    },
+    {
+      "key": "fatpandaslots",
+      "name": "fatpanda-slots",
+      "total_games": "23"
+    },
+    {
+      "key": "5gslot",
+      "name": "5g-slot",
+      "total_games": "39"
+    },
+    {
+      "key": "ggsoftslot",
+      "name": "ggsoft-slot",
+      "total_games": "12"
+    }
+  ]
+}

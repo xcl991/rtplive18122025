@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="icon" type="image/png" href="" id="favicon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets-config.js"></script>
+    <script>
+        // IMMEDIATE UPDATE - Runs before page render to prevent flash of wrong content
+        document.title = `JADWAL DAN LIVE SCORE BOLA - ${ASSETS.siteName}`;
+        document.getElementById('favicon').href = ASSETS.faviconUrl;
+
+        // APPLY THEME IMMEDIATELY - Set CSS variables before page renders
+        (function() {
+            const theme = (ASSETS.themePreset === "custom") ? ASSETS.theme : THEME_PRESETS[ASSETS.themePreset] || THEME_PRESETS.red;
+            const root = document.documentElement;
+
+            root.style.setProperty('--bg-primary', theme.bgPrimary);
+            root.style.setProperty('--bg-secondary', theme.bgSecondary);
+            root.style.setProperty('--accent-primary', theme.accentPrimary);
+            root.style.setProperty('--accent-secondary', theme.accentSecondary);
+        })();
+    </script>
+    <!-- Firebase Push Notifications -->
+    <!-- ONLY load App SDK in HTML - Messaging SDK loaded dynamically AFTER SW ready -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-simple.js"></script>
+    <style>
+        /* Animated Pulse Glow Effect */
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes moveOrb1 {
+            0%, 100% { top: 20%; left: 10%; }
+            50% { top: 40%; left: 30%; }
+        }
+
+        @keyframes moveOrb2 {
+            0%, 100% { top: 60%; right: 15%; }
+            50% { top: 30%; right: 35%; }
+        }
+
+        @keyframes moveOrb3 {
+            0%, 100% { bottom: 20%; left: 50%; }
+            50% { bottom: 40%; left: 30%; }
+        }
+
+        /* Background animated orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-primary, #22c55e), transparent);
+            top: 20%;
+            left: 10%;
+            animation: pulseGlow 8s ease-in-out infinite, moveOrb1 20s ease-in-out infinite;
+        }
+
+        body::after {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-secondary, #4ade80), transparent);
+            top: 60%;
+            right: 15%;
+            animation: pulseGlow 6s ease-in-out infinite, moveOrb2 15s ease-in-out infinite;
+        }
+
+        body {
+            background-color: #050914;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <header class="w-full z-50 bg-[#050914]/90 backdrop-blur-lg border-b border-white/5 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="../">
+                <img id="headerLogoImg" src="" alt="" class="h-10 md:h-12 object-contain hover:scale-105 transition cursor-pointer" style="opacity: 0;">
+            </a>
+            <script>
+                // Update logo immediately when this script runs
+                (function() {
+                    const logo = document.getElementById('headerLogoImg');
+                    logo.src = ASSETS.logoUrl;
+                    logo.alt = ASSETS.siteName;
+                    logo.style.opacity = '1';
+                })();
+            </script>
+            <a href="../" class="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 text-xs font-bold shadow-[0_0_15px_rgba(220,38,38,0.5 )] hover:shadow-[0_0_25px_rgba(220,38,38,0.7)] hover:-translate-y-0.5 transition transform">
+                RTP SLOT
+            </a>
+        </div>
+    </header>
+
+    <main class="w-full">
+        <div class="text-center mb-10">
+            <a href="https://t.ly/Yae-P7" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-lg font-black text-gray-900 shadow-[0_0_25px_rgba(251,191,36,0.8)] hover:shadow-[0_0_35px_rgba(251,191,36,1)] hover:-translate-y-1 transition transform scale-105">
+                <span data-lucide="zap" class="w-6 h-6 mr-2 fill-yellow-900"></span>
+                LINK MAIN
+            </a>
+        </div>
+			
+        <div class="w-full bg-[#0a0f1c] rounded-lg">
+            
+            <iframe 
+                src="https://www.scorebat.com/embed/livescore/?token=MjU0NTMxXzE3NjM1NDc0MjFfM2JmOWQ1MTEyNDAyYTY0ZGE2MjgxZjViMzI4N2FkNDBmOThjZmY1Ng==" 
+                frameborder="0" 
+                width="100%" 
+                height="1800"  
+                allowfullscreen 
+                allow="autoplay; fullscreen" 
+                style="width:100%;height:1800px;overflow:hidden;display:block;" 
+                class="_scorebatEmbeddedPlayer_">
+            </iframe>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="https://www.scorebat.com/embed/embed.js?v=arrv"></script>
+
+</body>
+</html>

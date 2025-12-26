@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="icon" type="image/png" href="" id="favicon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../assets-config.js"></script>
+    <script>
+        // IMMEDIATE UPDATE - Runs before page render to prevent flash of wrong content
+        document.title = ASSETS.siteTitle_Togel;
+        document.getElementById('favicon').href = ASSETS.faviconUrl;
+
+        // APPLY THEME IMMEDIATELY - Set CSS variables before page renders
+        (function() {
+            const theme = (ASSETS.themePreset === "custom") ? ASSETS.theme : THEME_PRESETS[ASSETS.themePreset] || THEME_PRESETS.red;
+            const root = document.documentElement;
+
+            root.style.setProperty('--bg-primary', theme.bgPrimary);
+            root.style.setProperty('--bg-secondary', theme.bgSecondary);
+            root.style.setProperty('--bg-tertiary', theme.bgTertiary);
+            root.style.setProperty('--accent-primary', theme.accentPrimary);
+            root.style.setProperty('--accent-secondary', theme.accentSecondary);
+            root.style.setProperty('--accent-glow', theme.accentGlow);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-mid', theme.gradientMid);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+            root.style.setProperty('--border-primary', theme.borderPrimary);
+            root.style.setProperty('--border-secondary', theme.borderSecondary);
+        })();
+    </script>
+    <!-- Firebase Push Notifications -->
+    <!-- ONLY load App SDK in HTML - Messaging SDK loaded dynamically AFTER SW ready -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-simple.js"></script>
+    <style>
+        /* CSS Variables - Will be overridden by theme in head script */
+        :root {
+            --bg-primary: #052e16;
+            --bg-secondary: #14532d;
+            --bg-tertiary: #166534;
+            --accent-primary: #22c55e;
+            --accent-secondary: #4ade80;
+            --accent-glow: rgba(34, 197, 94, 0.3);
+            --gradient-start: #052e16;
+            --gradient-mid: #14532d;
+            --gradient-end: #166534;
+            --border-primary: rgba(34, 197, 94, 0.5);
+            --border-secondary: rgba(34, 197, 94, 0.2);
+        }
+
+        /* Animated Pulse Glow Effect */
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes moveOrb1 {
+            0%, 100% { top: 20%; left: 10%; }
+            50% { top: 40%; left: 30%; }
+        }
+
+        @keyframes moveOrb2 {
+            0%, 100% { top: 60%; right: 15%; }
+            50% { top: 30%; right: 35%; }
+        }
+
+        @keyframes moveOrb3 {
+            0%, 100% { bottom: 20%; left: 50%; }
+            50% { bottom: 40%; left: 30%; }
+        }
+
+        /* Background animated orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-primary), transparent);
+            top: 20%;
+            left: 10%;
+            animation: pulseGlow 8s ease-in-out infinite, moveOrb1 20s ease-in-out infinite;
+        }
+
+        body::after {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-secondary), transparent);
+            top: 60%;
+            right: 15%;
+            animation: pulseGlow 6s ease-in-out infinite, moveOrb2 15s ease-in-out infinite;
+        }
+
+        /* Background Utama: Gradasi dari Theme */
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Additional floating orb */
+        #app::before {
+            content: '';
+            position: fixed;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow), transparent);
+            bottom: 20%;
+            left: 50%;
+            filter: blur(60px);
+            animation: pulseGlow 7s ease-in-out infinite, moveOrb3 18s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Override hardcoded Tailwind colors with CSS variables */
+        header {
+            background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary)) !important;
+            border-color: var(--border-secondary) !important;
+        }
+        /* Kartu Pasaran: Efek Shadow & Gradasi */
+        .market-card {
+            background: linear-gradient(145deg, #4b1414 0%, #602020 100%);
+            border: 1px solid #dc2626;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease-in-out;
+        }
+        .market-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(220, 38, 38, 0.4);
+        }
+        /* Box Angka Prediksi */
+        .prediction-box {
+            background-color: #7f1d1d;
+            border-radius: 6px;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+            color: #ffc107;
+            border: 1px solid #facc1550;
+        }
+        /* Box Shio Kuat */
+        .shio-box {
+            background: linear-gradient(135deg, #991b1b, #b91c1c, #dc2626);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-weight: extra-bold;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.6);
+            letter-spacing: 2px;
+        }
+        /* Style untuk Angka Jitu 4D */
+        .angka-jitu {
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen pb-24">
+        
+        <header class="fixed top-0 w-full z-50 bg-gradient-to-b from-[#331a1a]/95 to-[#200f0f]/80 backdrop-blur-xl border-b border-red-500/20 shadow-2xl">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <a id="headerLogoLink" href="https://t.ly/Yae-P7" target="_blank" rel="noopener noreferrer">
+                    <img id="headerLogoImg" src="" alt="" class="h-10 md:h-12 object-contain hover:scale-110 transition cursor-pointer drop-shadow-lg" style="opacity: 0;">
+                </a>
+                <script>
+                    // Update logo immediately when this script runs
+                    (function() {
+                        const logo = document.getElementById('headerLogoImg');
+                        logo.src = ASSETS.logoUrl;
+                        logo.alt = ASSETS.siteName;
+                        logo.style.opacity = '1';
+                    })();
+                </script>
+                <a href="../" class="px-4 py-2 rounded-full bg-gradient-to-r from-red-600 to-red-800 text-xs font-bold text-white shadow-lg hover:shadow-[0_0_15px_rgba(220,38,38,0.8)] transition">RTP SLOT</a>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 py-24">
+            
+            <div class="text-center mb-10">
+                <p class="text-lg font-bold text-red-300">HARI INI: <span id="current-date" class="text-amber-400"></span></p>
+            </div>
+
+            <div class="text-center mb-10">
+                <a href="https://t.ly/Yae-P7" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-lg font-black text-gray-900 shadow-[0_0_25px_rgba(251,191,36,0.8)] hover:shadow-[0_0_35px_rgba(251,191,36,1)] hover:-translate-y-1 transition transform scale-105">
+                    <span data-lucide="zap" class="w-6 h-6 mr-2 fill-yellow-900"></span>
+                    PASANG SEKARANG
+                </a>
+            </div>
+
+            <div id="prediction-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        // ============================================
+        // 🎨 ASSETS Configuration loaded from ../assets-config.js
+        // ============================================
+        // PENTING: Untuk update branding & links, edit file: ../assets-config.js
+        // JANGAN edit di sini! Semua konfigurasi ada di assets-config.js
+
+        // ============================================
+        // Update all branding and CTA links from centralized ASSETS
+        // ============================================
+        const updateAllBranding = () => {
+            // Title, favicon, and logo are now updated inline for faster rendering
+            // No need to update again here as they're already set before page render
+
+            // Update all main CTA links
+            document.querySelectorAll('a[href="https://t.ly/Yae-P7"]').forEach(link => {
+                link.href = ASSETS.linkUtama;
+            });
+
+            // Update RTP page link
+            document.querySelectorAll('a[href="../"]').forEach(link => {
+                link.href = ASSETS.linkRtpPage;
+            });
+
+            console.log('✅ All branding & CTA links updated from ASSETS configuration');
+            console.log(`   📝 Site: ${ASSETS.siteName}`);
+            console.log(`   🔗 Main Link: ${ASSETS.linkUtama}`);
+            console.log(`   🎰 RTP Page: ${ASSETS.linkRtpPage}`);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAllBranding();
+
+            const today = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = today.toLocaleDateString('id-ID', dateOptions).toUpperCase();
+
+            loadPredictions();
+
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            setInterval(loadPredictions, 3600000);
+        });
+
+
+        const PASARAN_TOGEL = [
+
+            { name: 'HONGKONG', flag: 'https://flagcdn.com/w40/hk.png', offset: 5891, libur: [] }, 
+
+            { name: 'SINGAPORE', flag: 'https://flagcdn.com/w40/sg.png', offset: 7244, libur: ['Selasa', 'Jumat'] },
+
+            { name: 'SYDNEY', flag: 'https://flagcdn.com/w40/au.png', offset: 9378, libur: [] } 
+        ];
+        const SHIO_NAMES = ["TIKUS", "KERBAU", "MACAN", "KELINCI", "NAGA", "ULAR", "KUDA", "KAMBING", "MONYET", "AYAM", "ANJING", "BABI"];
+
+
+        const getDateSeed = () => {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            let seedString = `${y}${m}${d}`;
+            let hash = 0;
+            for (let i = 0; i < seedString.length; i++) {
+                hash = ((hash << 5) - hash) + seedString.charCodeAt(i);
+                hash |= 0; 
+            }
+            return Math.abs(hash) + 1; 
+        };
+
+        const generatePredictionData = (initialSeed) => {
+            let currentSeed = initialSeed;
+            const P = 4294967296; 
+
+            const nextRandom = () => {
+                currentSeed = (currentSeed * 1664525 + 1013904223) % P;
+                return currentSeed / P;
+            };
+
+            const nextDigit = () => Math.floor(nextRandom() * 10);
+            
+            const generateNumber = (length) => {
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += nextDigit();
+                }
+                return result;
+            };
+
+            const getElement = (arr) => {
+                const index = Math.floor(nextRandom() * arr.length);
+                return arr[index];
+            };
+
+            const getAngkaJitu4D = () => generateNumber(4);
+
+            const getColokBebas = () => {
+                let num1 = nextDigit();
+                let num2 = nextDigit();
+                while (num2 === num1) {
+                    num2 = nextDigit(); 
+                }
+                return `${num1} & ${num2}`;
+            };
+
+            const getDasar = () => getElement(['KECIL / GENAP', 'BESAR / GANJIL', 'KECIL / GANJIL', 'BESAR / GENAP']);
+
+            const getBBFS = () => {
+                let numbers = [];
+                while(numbers.length < 7){
+                    const num = nextDigit();
+                    if(numbers.indexOf(num) === -1) numbers.push(num);
+                }
+                return numbers.join('');
+            };
+
+            const getShioKuat = () => getElement(SHIO_NAMES);
+
+            const getTop2D = () => {
+                let numbers = [];
+                while(numbers.length < 8){
+                    const num = String(Math.floor(nextRandom() * 100)).padStart(2, '0');
+                    if(numbers.indexOf(num) === -1) numbers.push(num);
+                }
+                return numbers;
+            };
+
+            const getTop3D = () => {
+                let numbers = [];
+                while(numbers.length < 3){
+                    const num = String(Math.floor(nextRandom() * 1000)).padStart(3, '0');
+                    if(numbers.indexOf(num) === -1) numbers.push(num);
+                }
+                return numbers;
+            };
+            
+            return {
+                angkaJitu4D: getAngkaJitu4D(),
+                colokBebas: getColokBebas(),
+                dasar: getDasar(),
+                bbfs: getBBFS(),
+                shioKuat: getShioKuat(),
+                top2D: getTop2D(),
+                top3D: getTop3D()
+            };
+        };
+
+
+        const loadPredictions = () => {
+            const container = document.getElementById('prediction-container');
+            const today = new Date();
+            const dayName = today.toLocaleDateString('id-ID', { weekday: 'long' });
+            
+            const dailySeed = getDateSeed(); 
+
+            container.innerHTML = PASARAN_TOGEL.map(pasaran => {
+                const isLibur = pasaran.libur.includes(dayName);
+                
+                const finalSeed = dailySeed + pasaran.offset;
+
+                const predictionData = generatePredictionData(finalSeed);
+
+                return `
+                    <div class="market-card rounded-xl p-6 flex flex-col h-full ${isLibur ? 'opacity-40 grayscale' : ''}">
+                        
+                        <div class="flex items-center justify-center mb-6">
+                            <img src="${pasaran.flag}" alt="${pasaran.name} Flag" class="w-8 h-8 rounded-full mr-3 border-2 border-amber-400 p-0.5 object-cover">
+                            <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-400 uppercase tracking-wider">${pasaran.name}</h2>
+                        </div>
+
+                        ${isLibur ? `
+                            <div class="text-center py-16 flex-grow flex flex-col justify-center">
+                                <p class="text-3xl font-black text-red-500 mb-3">TUTUP SEMENTARA</p>
+                                <p class="text-base text-red-300">Pasaran LIBUR Setiap Hari ${pasaran.libur.join(' & ')}</p>
+                            </div>
+                        ` : `
+                            <div class="text-center mb-6">
+                                <p class="text-sm font-bold text-red-300 mb-2">ANGKA JITU 4D (BB)</p>
+                                <p class="text-6xl font-black text-amber-400 tracking-[0.3em] angka-jitu">${predictionData.angkaJitu4D}</p>
+                            </div>
+
+                            <div class="mb-6">
+                                <p class="text-xs font-bold text-red-300 mb-1 text-center">SHIO KUAT HARI INI</p>
+                                <div class="shio-box">${predictionData.shioKuat}</div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <p class="text-xs font-bold text-red-300 mb-1 text-center">COLOK BEBAS</p>
+                                    <div class="prediction-box">${predictionData.colokBebas}</div>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-red-300 mb-1 text-center">DASAR</p>
+                                    <div class="prediction-box">${predictionData.dasar}</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <p class="text-xs font-bold text-red-300 mb-1 text-center">BBFS (BOLAK BALIK FULL SET)</p>
+                                <div class="prediction-box text-lg tracking-wider">${predictionData.bbfs}</div>
+                            </div>
+
+                            <div class="mb-6">
+                                <p class="text-xs font-bold text-red-300 mb-2 text-center">TOP 2D BOLAK BALIK</p>
+                                <div class="grid grid-cols-4 gap-2">
+                                    ${predictionData.top2D.map(num => `<div class="prediction-box text-sm">${num}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <p class="text-xs font-bold text-red-300 mb-2 text-center">TOP 3D BOLAK BALIK</p>
+                                <div class="grid grid-cols-3 gap-2">
+                                    ${predictionData.top3D.map(num => `<div class="prediction-box text-sm">${num}</div>`).join('')}
+                                </div>
+                            </div>
+							
+            <div class="text-center mb-10">
+                <a href="https://t.ly/Yae-P7" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-lg font-black text-gray-900 shadow-[0_0_25px_rgba(251,191,36,0.8)] hover:shadow-[0_0_35px_rgba(251,191,36,1)] hover:-translate-y-1 transition transform scale-105">
+                    <span data-lucide="zap" class="w-6 h-6 mr-2 fill-yellow-900"></span>
+                    PASANG SEKARANG
+                </a>
+            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // ============================================
+        // APPLY THEME - Terapkan Warna dari ASSETS
+        // ============================================
+        function applyThemeTogel() {
+            const theme = getActiveTheme();
+
+            // Apply ke body
+            document.body.style.background = `linear-gradient(135deg, ${theme.bgPrimary} 0%, ${theme.bgSecondary} 50%, ${theme.bgPrimary} 100%)`;
+            document.body.style.color = theme.textPrimary;
+
+            // Update title
+            document.title = ASSETS.siteTitle_Togel;
+
+            // Update favicon
+            const favicon = document.querySelector('link[rel="icon"]');
+            if (favicon) favicon.href = ASSETS.faviconUrl;
+
+            // Update logo
+            const logo = document.getElementById('headerLogoImg');
+            const logoLink = document.getElementById('headerLogoLink');
+            if (logo) {
+                logo.src = ASSETS.logoUrl;
+                logo.alt = ASSETS.siteName;
+            }
+            if (logoLink) {
+                logoLink.href = ASSETS.linkUtama;
+            }
+
+            // Apply theme ke semua komponen
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = `
+                /* Header */
+                header {
+                    background: linear-gradient(to bottom, ${theme.bgSecondary}f2, ${theme.bgPrimary}cc) !important;
+                    border-color: ${theme.borderSecondary} !important;
+                }
+
+                /* Market Cards */
+                .market-card {
+                    background: linear-gradient(145deg, ${theme.bgTertiary} 0%, ${theme.bgSecondary} 100%) !important;
+                    border-color: ${theme.accentPrimary} !important;
+                }
+                .market-card:hover {
+                    box-shadow: 0 20px 50px ${theme.accentGlow} !important;
+                }
+
+                /* Prediction Box */
+                .prediction-box {
+                    background-color: ${theme.gradientMid} !important;
+                    border-color: ${theme.ctaPrimary}50 !important;
+                    color: ${theme.ctaPrimary} !important;
+                }
+
+                /* Shio Box */
+                .shio-box {
+                    background: linear-gradient(135deg, ${theme.gradientStart}, ${theme.gradientMid}, ${theme.accentPrimary}) !important;
+                    box-shadow: 0 4px 15px ${theme.accentGlow} !important;
+                }
+
+                /* Text colors */
+                .text-red-300 { color: ${theme.textSecondary} !important; }
+                .text-red-400 { color: ${theme.textSecondary} !important; }
+                .text-red-500 { color: ${theme.accentPrimary} !important; }
+                .border-red-500 { border-color: ${theme.accentPrimary} !important; }
+                .border-red-600 { border-color: ${theme.accentPrimary} !important; }
+                .bg-red-900 { background-color: ${theme.gradientStart} !important; }
+                .bg-red-800 { background-color: ${theme.gradientMid} !important; }
+
+                /* CTA Buttons - exclude header logo link */
+                a[href*="t.ly"]:not(#headerLogoLink), a[href*="linkUtama"]:not(#headerLogoLink) {
+                    background: linear-gradient(to right, ${theme.ctaPrimary}, ${theme.ctaSecondary}) !important;
+                    color: ${theme.ctaText} !important;
+                    box-shadow: 0 0 25px ${theme.ctaPrimary}cc !important;
+                }
+                a[href*="t.ly"]:not(#headerLogoLink):hover, a[href*="linkUtama"]:not(#headerLogoLink):hover {
+                    box-shadow: 0 0 35px ${theme.ctaPrimary} !important;
+                }
+
+                /* Bottom Navigation */
+                .fixed.bottom-0 {
+                    background: linear-gradient(to top, ${theme.bgPrimary}, ${theme.bgSecondary}f2) !important;
+                    border-color: ${theme.borderSecondary} !important;
+                    color: ${theme.textSecondary} !important;
+                }
+                .fixed.bottom-0 a:hover {
+                    color: ${theme.ctaPrimary} !important;
+                }
+            `;
+            document.head.appendChild(styleSheet);
+
+            // Update semua link CTA
+            document.querySelectorAll('a[href="https://t.ly/Yae-P7"]').forEach(link => {
+                link.href = ASSETS.linkUtama;
+            });
+
+            console.log(`✅ Theme Togel applied: ${ASSETS.themePreset.toUpperCase()}`);
+        }
+
+        // Run on load
+        window.addEventListener('load', applyThemeTogel);
+    </script>
+
+<!-- =============== FLOATING GIF MENU =============== -->
+<style>
+  .fab-wrapper {
+    position: fixed;
+    left: 0;
+    bottom: 330px;
+    z-index: 99990;
+    font-family: Arial, sans-serif;
+    width: 80px;
+    display: flex;
+    justify-content: center;
+  }
+  .fab-main {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 16px rgba(0,0,0,0.6);
+    animation: floatAnim 3s ease-in-out infinite;
+  }
+  @keyframes floatAnim {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+  .fab-main:hover {
+    animation: none;
+    transform: translateY(-4px) scale(1.05);
+  }
+  .fab-menu {
+    position: absolute;
+    bottom: 80px;
+    left: 4px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .fab-menu.show { display: flex; }
+  .fab-item {
+    width: 65px;
+    height: 65px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.55);
+    animation: fadeSlide .2s ease;
+  }
+  .fab-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @keyframes fadeSlide {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+</style>
+
+<div class="fab-wrapper" id="fabWrapper" style="display:none;">
+  <div class="fab-main" id="fabMain" onclick="toggleFabMenu()"></div>
+  <div class="fab-menu" id="fabMenu">
+    <a id="fabLinkSurvey" href="#" target="_blank" rel="noopener">
+      <div class="fab-item"><img id="fabImgSurvey" src="" alt="Survey"></div>
+    </a>
+    <a id="fabLinkKotakPlay" href="#" target="_blank" rel="noopener">
+      <div class="fab-item"><img id="fabImgKotakPlay" src="" alt="Kotak Play"></div>
+    </a>
+    <a id="fabLinkDownloadApk" href="#" target="_blank" rel="noopener">
+      <div class="fab-item"><img id="fabImgDownloadApk" src="" alt="Download APK"></div>
+    </a>
+    <a id="fabLinkGame" href="#" target="_blank" rel="noopener">
+      <div class="fab-item"><img id="fabImgGame" src="" alt="Game"></div>
+    </a>
+    <a id="fabLinkWhatsApp" href="#" target="_blank" rel="noopener">
+      <div class="fab-item"><img id="fabImgWhatsApp" src="" alt="WhatsApp"></div>
+    </a>
+  </div>
+</div>
+
+<script>
+  function toggleFabMenu() {
+    document.getElementById("fabMenu").classList.toggle("show");
+  }
+</script>
+
+<!-- =============== CUSTOMER CARE FLOATING BAR =============== -->
+<style>
+  .cc-livechat-wrapper {
+    position: fixed;
+    left: 0;
+    bottom: 80px;
+    z-index: 99999;
+    font-family: Arial, sans-serif;
+  }
+  .cc-livechat-bar {
+    width: 60px;
+    height: 190px;
+    background: linear-gradient(180deg, #0052ff, #007bff);
+    border-radius: 0 14px 14px 0;
+    box-shadow: 0 0 12px rgba(0,0,0,0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 6px 10px;
+    cursor: pointer;
+    border: 1px solid #0b53d0;
+    position: relative;
+    animation: cc-wiggle 2.2s ease-in-out infinite;
+  }
+  .cc-livechat-bar:hover {
+    animation: none;
+    transform: translateX(3px);
+    box-shadow: 0 0 18px rgba(0,0,0,0.7);
+  }
+  @keyframes cc-wiggle {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(4px); }
+    40%  { transform: translateX(0); }
+    60%  { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+  }
+  .cc-livechat-avatar {
+    position: absolute;
+    top: -22px;
+    left: 8px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+  }
+  .cc-livechat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cc-livechat-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 32px;
+  }
+  .cc-livechat-text span {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  .cc-livechat-status {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(15,23,42,0.9);
+    box-shadow: 0 0 6px rgba(0,0,0,0.6);
+    min-width: auto;
+  }
+  .cc-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+  .cc-status-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .cc-status-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #e5f3ff;
+  }
+  .cc-status-time {
+    font-size: 9px;
+    color: #9ca3af;
+  }
+  .cc-livechat-dialog {
+    position: fixed;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(20px);
+    width: min(92vw, 360px);
+    background: #111827;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+    color: #fff;
+    border: 1px solid #1f2937;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+    z-index: 100000;
+  }
+  .cc-livechat-dialog.cc-show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .cc-dialog-header {
+    padding: 10px 14px;
+    background: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 14px 14px 0 0;
+  }
+  .cc-dialog-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cc-dialog-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 2px solid #10b981;
+  }
+  .cc-dialog-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cc-dialog-header-text {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .cc-dialog-header-text strong {
+    font-size: 13px;
+  }
+  .cc-dialog-close {
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding-left: 6px;
+  }
+  .cc-dialog-body {
+    padding: 12px 14px 4px;
+    font-size: 12px;
+    background: #111827;
+  }
+  .cc-dialog-body p {
+    margin: 0 0 6px;
+  }
+  .cc-dialog-footer {
+    padding: 8px 14px 12px;
+    background: #111827;
+    border-radius: 0 0 14px 14px;
+  }
+  .cc-dialog-button {
+    width: 100%;
+    border: none;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    color: #ffffff;
+    padding: 10px 0;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .cc-dialog-button:hover {
+    filter: brightness(1.05);
+  }
+  @media (max-width: 480px) {
+    .fab-wrapper { bottom: 260px; }
+    .cc-livechat-bar { height: 170px; }
+  }
+</style>
+
+<div class="cc-livechat-wrapper" id="ccWrapper" style="display:none;">
+  <div class="cc-livechat-bar" id="cc-bar">
+    <div class="cc-livechat-avatar">
+      <img id="ccAvatarImg" src="" alt="Customer Care">
+    </div>
+    <div class="cc-livechat-text">
+      <span id="ccBarText">CUSTOMER CARE</span>
+    </div>
+    <div class="cc-livechat-status">
+      <span class="cc-status-dot" id="ccStatusDot"></span>
+      <div class="cc-status-text">
+        <span class="cc-status-label" id="ccStatusLabel">Online</span>
+        <span class="cc-status-time" id="ccStatusTime">s/d 23:30</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cc-livechat-dialog" id="cc-dialog">
+  <div class="cc-dialog-header">
+    <div class="cc-dialog-header-left">
+      <div class="cc-dialog-avatar">
+        <img id="ccDialogAvatarImg" src="" alt="CC">
+      </div>
+      <div class="cc-dialog-header-text">
+        <strong id="ccDialogTitle">Customer Care</strong><br>
+        <span id="ccDialogSubtitle">Layanan hingga pukul 23:30</span>
+      </div>
+    </div>
+    <div class="cc-dialog-close" id="cc-close">&times;</div>
+  </div>
+  <div class="cc-dialog-body">
+    <p id="ccDialogMessage"></p>
+    <p id="ccDialogMessage2"></p>
+  </div>
+  <div class="cc-dialog-footer">
+    <button class="cc-dialog-button" id="ccDialogButton">Hubungi Customer Care</button>
+  </div>
+</div>
+
+<!-- ========= POPUP EVENT ========= -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  .xmas-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(37,99,235,0.35), rgba(3,7,18,0.95));
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 120000;
+    backdrop-filter: blur(3px);
+    font-family: 'Poppins', sans-serif;
+  }
+  .xmas-popup-overlay.show { display: flex; }
+  .xmas-popup-box {
+    position: relative;
+    width: min(95vw, 820px);
+    border-radius: 18px;
+    padding: 12px 12px 20px;
+    background: radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
+    box-shadow: 0 0 40px rgba(37,99,235,0.85), 0 0 90px rgba(15,23,42,1);
+    animation: xmasZoomIn .24s ease-out;
+    border: 1px solid rgba(148,163,184,0.7);
+  }
+  .xmas-ribbon {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 16px;
+    border-radius: 999px;
+    background: rgba(56,189,248,0.2);
+    border: 1px solid rgba(56,189,248,0.8);
+    color: #e5e7eb;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 auto 14px;
+  }
+  .xmas-ribbon-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #facc15;
+    margin-right: 8px;
+  }
+  .xmas-popup-inner {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #020617;
+  }
+  .xmas-popup-inner img {
+    width: 100%;
+    display: block;
+  }
+  .xmas-popup-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    border: 1px solid #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .xmas-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .x-btn-xmas {
+    flex: 1;
+    max-width: 240px;
+    position: relative;
+    padding: 13px 10px 11px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #1d9cf5 0%, #0a6dbf 100%);
+    color: #fff !important;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    overflow: hidden;
+    border: 1px solid #0b4b99;
+    box-shadow: 0 6px 16px rgba(0, 113, 227, .55);
+    transition: 0.18s ease;
+  }
+  .x-btn-xmas::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -10%;
+    right: -10%;
+    height: 18px;
+    background: #ffffff;
+    border-radius: 50% 50% 40% 40%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 0 8px rgba(255,255,255,1);
+  }
+  .x-btn-xmas:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.06);
+    box-shadow: 0 8px 20px rgba(0, 145, 255, .75);
+  }
+  @keyframes xmasZoomIn {
+    from { opacity: 0; transform: scale(.9); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+</style>
+
+<div class="xmas-popup-overlay" id="xmasOverlay">
+  <div class="xmas-popup-box">
+    <div class="xmas-popup-close" id="xmasClose">&times;</div>
+    <div style="text-align:center;">
+      <div class="xmas-ribbon">
+        <span class="xmas-ribbon-dot"></span>
+        <span id="popupRibbonText">SPECIAL EVENT</span>
+      </div>
+    </div>
+    <div class="xmas-popup-inner">
+      <img id="popupBannerImg" src="" alt="Promo Banner">
+    </div>
+    <div class="xmas-buttons">
+      <a id="popupBtn1" href="#" class="x-btn-xmas" target="_blank">
+        <span id="popupBtn1Text">WhatsApp Admin</span>
+      </a>
+      <a id="popupBtn2" href="#" class="x-btn-xmas" target="_blank">
+        <span id="popupBtn2Text">Customer Care</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- =============== INIT ALL FLOATING COMPONENTS =============== -->
+<script>
+(function() {
+  // FLOATING GIF MENU
+  function initFloatingMenu() {
+    if (!ASSETS.enableFloatingMenu) return;
+    const wrapper = document.getElementById('fabWrapper');
+    const fabMain = document.getElementById('fabMain');
+    fabMain.style.backgroundImage = `url("${ASSETS.imgFabMain}")`;
+    document.getElementById('fabImgSurvey').src = ASSETS.imgSurvey;
+    document.getElementById('fabImgKotakPlay').src = ASSETS.imgKotakPlay;
+    document.getElementById('fabImgDownloadApk').src = ASSETS.imgDownloadApk;
+    document.getElementById('fabImgGame').src = ASSETS.imgGame;
+    document.getElementById('fabImgWhatsApp').src = ASSETS.imgWhatsApp;
+    document.getElementById('fabLinkSurvey').href = ASSETS.linkSurvey;
+    document.getElementById('fabLinkKotakPlay').href = ASSETS.linkKotakPlay;
+    document.getElementById('fabLinkDownloadApk').href = ASSETS.linkDownloadApk;
+    document.getElementById('fabLinkGame').href = ASSETS.linkGame;
+    document.getElementById('fabLinkWhatsApp').href = ASSETS.linkWhatsAppAdmin;
+
+    // Individual button controls (NEW)
+    if (ASSETS.floatingMenuButtons) {
+      if (!ASSETS.floatingMenuButtons.showSurvey) {
+        document.getElementById('fabLinkSurvey').style.display = 'none';
+      }
+      if (!ASSETS.floatingMenuButtons.showKotakPlay) {
+        document.getElementById('fabLinkKotakPlay').style.display = 'none';
+      }
+      if (!ASSETS.floatingMenuButtons.showDownloadApk) {
+        document.getElementById('fabLinkDownloadApk').style.display = 'none';
+      }
+      if (!ASSETS.floatingMenuButtons.showGame) {
+        document.getElementById('fabLinkGame').style.display = 'none';
+      }
+      if (!ASSETS.floatingMenuButtons.showWhatsApp) {
+        document.getElementById('fabLinkWhatsApp').style.display = 'none';
+      }
+    }
+
+    wrapper.style.display = 'flex';
+    console.log('✅ Floating Menu initialized');
+  }
+
+  // CUSTOMER CARE BAR
+  function initCustomerCare() {
+    if (!ASSETS.enableCustomerCare) return;
+    const wrapper = document.getElementById('ccWrapper');
+    const bar = document.getElementById('cc-bar');
+    const dialog = document.getElementById('cc-dialog');
+    const closeBtn = document.getElementById('cc-close');
+
+    document.getElementById('ccAvatarImg').src = ASSETS.imgCustomerCare;
+    document.getElementById('ccDialogAvatarImg').src = ASSETS.imgCustomerCare;
+    document.getElementById('ccBarText').textContent = ASSETS.ccBarText;
+    document.getElementById('ccDialogTitle').textContent = ASSETS.ccDialogTitle;
+    document.getElementById('ccDialogSubtitle').textContent = ASSETS.ccDialogSubtitle;
+    document.getElementById('ccDialogMessage').innerHTML = ASSETS.ccDialogMessage;
+    document.getElementById('ccDialogMessage2').innerHTML = ASSETS.ccDialogMessage2;
+    document.getElementById('ccDialogButton').textContent = ASSETS.ccDialogButtonText;
+    document.getElementById('ccDialogButton').onclick = function() {
+      window.open(ASSETS.linkCustomerCare, '_blank');
+    };
+
+    bar.addEventListener('click', function() { dialog.classList.toggle('cc-show'); });
+    closeBtn.addEventListener('click', function(e) { e.stopPropagation(); dialog.classList.remove('cc-show'); });
+
+    function updateCCStatus() {
+      const dot = document.getElementById('ccStatusDot');
+      const label = document.getElementById('ccStatusLabel');
+      const time = document.getElementById('ccStatusTime');
+      const now = new Date();
+      const hour = now.getHours();
+      const min = now.getMinutes();
+      const startParts = ASSETS.ccOnlineStart.split(':');
+      const endParts = ASSETS.ccOnlineEnd.split(':');
+      const startOnline = parseInt(startParts[0]) * 60 + parseInt(startParts[1]);
+      const endOnline = parseInt(endParts[0]) * 60 + parseInt(endParts[1]);
+      const nowMinutes = hour * 60 + min;
+      if (nowMinutes >= startOnline && nowMinutes <= endOnline) {
+        dot.style.background = "#22c55e";
+        label.textContent = "Online";
+        time.textContent = "s/d " + ASSETS.ccOnlineEnd;
+      } else {
+        dot.style.background = "#ef4444";
+        label.textContent = "Offline";
+        time.textContent = "buka " + ASSETS.ccOnlineStart;
+      }
+    }
+    updateCCStatus();
+    setInterval(updateCCStatus, 30000);
+    wrapper.style.display = 'block';
+    console.log('✅ Customer Care initialized');
+  }
+
+  // POPUP EVENT
+  function initPopupEvent() {
+    if (!ASSETS.enablePopup) return;
+    const overlay = document.getElementById('xmasOverlay');
+    const closeBtn = document.getElementById('xmasClose');
+
+    document.getElementById('popupRibbonText').textContent = ASSETS.popupRibbonText;
+    document.getElementById('popupBannerImg').src = ASSETS.popupImageUrl;
+    document.getElementById('popupBtn1Text').textContent = ASSETS.popupButton1Text;
+    document.getElementById('popupBtn2Text').textContent = ASSETS.popupButton2Text;
+    document.getElementById('popupBtn1').href = ASSETS.linkWhatsAppAdmin;
+    document.getElementById('popupBtn2').href = ASSETS.linkCustomerCare;
+
+    function openPopup() { overlay.classList.add('show'); }
+    function closePopup() { overlay.classList.remove('show'); }
+
+    setTimeout(openPopup, ASSETS.popupDelay);
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', function(e) { if(e.target === overlay) closePopup(); });
+    console.log('✅ Popup Event initialized');
+  }
+
+  // APPLY THEME TO FLOATING COMPONENTS
+  function applyThemeToFloating() {
+    const theme = getActiveTheme();
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      .cc-livechat-bar {
+        background: linear-gradient(180deg, ${theme.accentPrimary}, ${theme.accentSecondary}) !important;
+        border-color: ${theme.gradientStart} !important;
+      }
+      .cc-livechat-dialog { background: ${theme.bgSecondary} !important; border-color: ${theme.bgTertiary} !important; }
+      .cc-dialog-header { background: ${theme.bgTertiary} !important; }
+      .cc-dialog-body, .cc-dialog-footer { background: ${theme.bgSecondary} !important; }
+      .cc-dialog-button { background: linear-gradient(90deg, ${theme.accentPrimary}, ${theme.accentSecondary}) !important; }
+      .cc-dialog-avatar { border-color: ${theme.accentPrimary} !important; }
+      .xmas-popup-overlay { background: radial-gradient(circle at top, ${theme.accentGlow}, ${theme.bgPrimary}f2) !important; }
+      .xmas-popup-box {
+        background: radial-gradient(circle at top, ${theme.bgSecondary} 0, ${theme.bgSecondary} 45%, ${theme.bgPrimary} 100%) !important;
+        box-shadow: 0 0 40px ${theme.accentGlow}, 0 0 90px ${theme.bgPrimary} !important;
+        border-color: ${theme.borderPrimary} !important;
+      }
+      .xmas-ribbon { background: ${theme.accentGlow} !important; border-color: ${theme.accentPrimary} !important; }
+      .xmas-popup-inner { background: ${theme.bgPrimary} !important; }
+      .x-btn-xmas {
+        background: linear-gradient(180deg, ${theme.accentPrimary} 0%, ${theme.gradientMid} 100%) !important;
+        border-color: ${theme.gradientStart} !important;
+        box-shadow: 0 6px 16px ${theme.accentGlow} !important;
+      }
+      .x-btn-xmas:hover { box-shadow: 0 8px 20px ${theme.accentGlow} !important; }
+      .x-btn-xmas::before { background: ${theme.textPrimary} !important; }
+      .fab-main { box-shadow: 0 0 16px ${theme.accentGlow} !important; }
+      .fab-item { box-shadow: 0 0 12px ${theme.accentGlow} !important; }
+    `;
+    document.head.appendChild(styleSheet);
+  }
+
+  // INIT ALL
+  window.addEventListener('load', function() {
+    applyThemeToFloating();
+    initFloatingMenu();
+    initCustomerCare();
+    initPopupEvent();
+    console.log('🎉 All floating components initialized (Togel Page)');
+  });
+})();
+</script>
+
+</body>
+</html>
