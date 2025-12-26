@@ -130,7 +130,7 @@ const ASSETS = {
     // "spotlight"     - Cahaya spotlight bergerak
     // "confetti"      - Confetti jatuh
     // "none"          - Tanpa efek (background solid)
-    backgroundEffect: "particles",
+    backgroundEffect: "orbs",  // Changed from "particles" - orbs is more subtle
 
     // ============================================
     // 🎨 THEME COLORS - Warna Website
