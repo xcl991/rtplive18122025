@@ -445,8 +445,8 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            border: 2px solid rgba(251, 191, 36, 0.5);
+            background: linear-gradient(135deg, var(--accent-primary), color-mix(in srgb, var(--accent-primary) 70%, #000));
+            border: 2px solid color-mix(in srgb, var(--cta-primary) 50%, transparent);
             color: white;
             display: none;
             align-items: center;
@@ -463,10 +463,10 @@
         }
 
         .provider-nav-btn:hover {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-color: #fbbf24;
+            background: linear-gradient(135deg, var(--cta-primary), var(--cta-secondary));
+            border-color: var(--cta-primary);
             transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+            box-shadow: 0 0 20px color-mix(in srgb, var(--cta-primary) 50%, transparent);
         }
 
         .provider-nav-btn:active {
@@ -480,7 +480,7 @@
 
         .provider-nav-btn:disabled:hover {
             transform: scale(1);
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, var(--accent-primary), color-mix(in srgb, var(--accent-primary) 70%, #000));
         }
 
         /* Mobile swipe indicator */
