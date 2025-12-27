@@ -836,14 +836,24 @@ body {
 /* .page-transition animation removed as it was causing popup/floating menu to be hidden */
 
 /* Fixed elements should always be visible regardless of body opacity */
-.xmas-popup-overlay,
 .fab-wrapper,
 .cc-livechat-wrapper,
-.cc-livechat-dialog,
-.toast-container,
-.fab-scroll-top {
+.toast-container {
     opacity: 1 !important;
     visibility: visible !important;
+}
+
+/* Popup overlay should only be visible when .show class is added */
+.xmas-popup-overlay {
+    pointer-events: none;
+}
+.xmas-popup-overlay.show {
+    pointer-events: auto;
+}
+
+/* Customer care dialog - ensure pointer-events work correctly */
+.cc-livechat-dialog.cc-show {
+    pointer-events: auto !important;
 }
 
 /* ========== FLOATING ACTION BUTTON ========== */
