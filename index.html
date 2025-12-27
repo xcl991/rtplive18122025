@@ -5033,17 +5033,23 @@ allGames['ggsoftslot'] = parseHTMLToGames(RAW_HTML_GGSOFTSLOT, 'ggsoftslot');
 
 <style>
   .xmas-popup-overlay {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at top, rgba(37,99,235,0.35), rgba(3,7,18,0.95));
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 120000;
+    position: fixed !important;
+    inset: 0 !important;
+    background: radial-gradient(circle at top, rgba(37,99,235,0.35), rgba(3,7,18,0.95)) !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 120000 !important;
     backdrop-filter: blur(3px);
     font-family: 'Poppins', sans-serif;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
-  .xmas-popup-overlay.show { display: flex; }
+  .xmas-popup-overlay.show {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 
   .xmas-popup-box {
     position: relative;

@@ -832,14 +832,18 @@ body {
     100% { transform: scale(1.8); opacity: 0; }
 }
 
-/* Page Transition */
-.page-transition {
-    animation: pageEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
+/* Page Transition - DISABLED to prevent hiding fixed elements */
+/* .page-transition animation removed as it was causing popup/floating menu to be hidden */
 
-@keyframes pageEnter {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+/* Fixed elements should always be visible regardless of body opacity */
+.xmas-popup-overlay,
+.fab-wrapper,
+.cc-livechat-wrapper,
+.cc-livechat-dialog,
+.toast-container,
+.fab-scroll-top {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* ========== FLOATING ACTION BUTTON ========== */
