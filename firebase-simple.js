@@ -297,30 +297,32 @@ Token length: ${token.length} characters`;
 
     // Show floating notification button
     function showFloatingButton() {
-        // Check if permission already granted
-        if (Notification.permission === 'granted') {
-            log('Permission already granted, skipping floating button');
-            return;
-        }
-
         // Check if button already exists
         if (document.getElementById('firebase-notification-prompt')) {
             return;
         }
 
-        log('Showing floating notification button (manual activation)');
+        log('Showing floating notification button');
 
         const permission = Notification.permission;
-        const buttonText = permission === 'granted' ? 'Aktifkan Push Notif' :
+        const buttonText = permission === 'granted' ? 'Notifikasi Aktif' :
                           permission === 'denied' ? 'Reset Notifikasi' :
                           'Aktifkan Notifikasi';
+
+        const buttonIcon = permission === 'granted' ? '🔔' :
+                          permission === 'denied' ? '🔕' :
+                          '🔔';
+
+        const buttonColor = permission === 'granted' ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' :
+                           permission === 'denied' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' :
+                           'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
 
         const button = document.createElement('div');
         button.id = 'firebase-notification-prompt';
         button.innerHTML = `
             <div class="firebase-notif-container">
                 <div class="firebase-notif-btn">
-                    <span class="firebase-notif-icon">🔔</span>
+                    <span class="firebase-notif-icon">${buttonIcon}</span>
                     <span class="firebase-notif-text">${buttonText}</span>
                     <button class="firebase-notif-close" aria-label="Close">&times;</button>
                 </div>
@@ -346,7 +348,7 @@ Token length: ${token.length} characters`;
                 }
 
                 .firebase-notif-btn {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    background: ${buttonColor};
                     color: white;
                     padding: 14px 20px;
                     border-radius: 50px;
